@@ -13,12 +13,9 @@ class MyApp extends StatelessWidget {
     return FutureBuilder<Object>(
         future: Future.delayed(const Duration(seconds: 1), () => 100),
         builder: (context, snapshot) {
-          return AnimatedSwitcher(
-            duration: const Duration(milliseconds: 700),
-            child:
+          return
             MaterialApp(
-              home: _splashLoadingWidget(snapshot))
-          );
+              home: _splashLoadingWidget(snapshot));
         });
   }
 
