@@ -1,7 +1,10 @@
+import "package:devoca/screen/main_screen.dart";
 import "package:flutter/material.dart";
 import "package:devoca/screen/splash_screen.dart";
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+import "package:devoca/provider/model_vocabulary_provider.dart";
+import "package:firebase_core/firebase_core.dart";
+import "package:provider/provider.dart";
+import "firebase_options.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +32,14 @@ class MyApp extends StatelessWidget {
     if (snapshot.hasError) {
       return const Text("Error");
     } else if (snapshot.hasData) {
-      return Container();
+      VocabularyListProvider vocabularyListProvider = VocabularyListProvider();
+      vocabularyListProvider.getSnapshot();
+      return MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(value: vocabularyListProvider),
+        ],
+        child: const MainScreen(),
+      );
     } else {
       return const SplashScreen();
     }
