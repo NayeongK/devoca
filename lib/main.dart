@@ -19,29 +19,24 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Object>(
-        future: Future.delayed(const Duration(seconds: 1), () => 100),
-        builder: (context, snapshot) {
-          return
-            MaterialApp(
-              home: _splashLoadingWidget(snapshot));
-        });
-  }
-
-  Widget _splashLoadingWidget(AsyncSnapshot<Object> snapshot) {
-    if (snapshot.hasError) {
-      return const Text("Error");
-    } else if (snapshot.hasData) {
-      VocabularyListProvider vocabularyListProvider = VocabularyListProvider();
-      vocabularyListProvider.getSnapshot();
-      return MultiProvider(
-        providers: [
-          ChangeNotifierProvider.value(value: vocabularyListProvider),
-        ],
-        child: const MainScreen(),
-      );
-    } else {
-      return const SplashScreen();
-    }
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => VocabularyListProvider()..getSnapshot()),
+      ],
+      child: MaterialApp(
+        home: FutureBuilder<Object>(
+          future: Future.delayed(const Duration(seconds: 1), () => 100),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return const Text("Error");
+            } else if (snapshot.hasData) {
+              return const MainScreen();
+            } else {
+              return const SplashScreen();
+            }
+          },
+        ),
+      ),
+    );
   }
 }
