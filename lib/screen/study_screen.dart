@@ -15,6 +15,7 @@ class StudyScreen extends StatefulWidget {
 class _StudyScreenState extends State<StudyScreen> {
   bool showWord = true;
   int currentWordIndex = 0;
+  Color borderColor = const Color(0xFFC6C7F7);
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +53,11 @@ class _StudyScreenState extends State<StudyScreen> {
               showWord = !showWord;
             });
           },
+          onHorizontalDragUpdate: (DragUpdateDetails details) {
+            setState(() {
+              borderColor = details.delta.dx > 0 ? Colors.green : Colors.red;
+            });
+          },
           onHorizontalDragEnd: (DragEndDetails details) {
             if (vocabularyList.words.isNotEmpty && currentWordIndex < vocabularyList.words.length) {
               if (details.velocity.pixelsPerSecond.dx > 0) {
@@ -61,6 +67,7 @@ class _StudyScreenState extends State<StudyScreen> {
               }
               if (currentWordIndex < vocabularyList.words.length - 1) {
                 setState(() {
+                  borderColor = Color(0xFFC6C7F7);
                   currentWordIndex++;
                   showWord = true;
                 });
@@ -74,7 +81,7 @@ class _StudyScreenState extends State<StudyScreen> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(35.0),
-              border: Border.all(color: const Color(0xFFC6C7F7)),
+              border: Border.all(color: borderColor, width: 4),
             ),
             child: Text(
               textToShow ?? "단어가 없습니다",
