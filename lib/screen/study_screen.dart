@@ -62,7 +62,7 @@ class _StudyScreenState extends State<StudyScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Center(
-                      child: Text(answerStatusProvider.correctCount.toString()),
+                      child: Text(answerStatusProvider.incorrectCount.toString()),
                     ),
                   ),
                 ],

@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 import "package:devoca/provider/model_vocabulary_provider.dart";
+import "package:devoca/provider/answer_status_provider.dart";
 import "package:devoca/screen/study_screen.dart";
 
 class MainScreen extends StatelessWidget {
@@ -23,6 +24,7 @@ class _MainListState extends State<MainList> {
   @override
   Widget build(BuildContext context) {
     final vocabularyProvider = Provider.of<VocabularyListProvider>(context);
+    final answerStatusProvider = Provider.of<AnswerStatusProvider>(context);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -37,41 +39,42 @@ class _MainListState extends State<MainList> {
                   final vocabularyList = vocabularyProvider.vocabularyLists[index];
                   return ListTile(
                     title: InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      StudyScreen(
-                                        vocabularyIndex: index,
-                                      )));
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                vocabularyList.title,
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.grey[800]
+                      onTap: () {
+                        answerStatusProvider.resetSession();
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                              StudyScreen(
+                                vocabularyIndex: index,
+                              )));
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              vocabularyList.title,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.grey[800]
+                              ),
+                            ),
+                            const SizedBox(height: 13),
+                            Wrap(
+                              spacing: 8.0,
+                              children: vocabularyList.hashtags.map((tag) => Chip(
+                                label: Text("# ${tag}",
+                                  style: const TextStyle(fontSize: 12)
                                 ),
-                              ),
-                              const SizedBox(height: 13),
-                              Wrap(
-                                spacing: 8.0,
-                                children: vocabularyList.hashtags.map((tag) => Chip(
-                                  label: Text("# ${tag}",
-                                      style: const TextStyle(fontSize: 12)
-                                  ),
-                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                )).toList(),
-                              ),
-                              const SizedBox(height: 45)
-                            ],
-                          ),
-                        )),
+                                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              )).toList(),
+                            ),
+                            const SizedBox(height: 45)
+                          ],
+                        ),
+                      )),
                   );
                 },
               ),
