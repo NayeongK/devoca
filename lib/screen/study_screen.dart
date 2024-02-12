@@ -46,51 +46,94 @@ class _StudyScreenState extends State<StudyScreen> {
           },
         ),
       ),
-      body: Center(
-        child: GestureDetector(
-          onTap: () {
-            setState(() {
-              showWord = !showWord;
-            });
-          },
-          onHorizontalDragUpdate: (DragUpdateDetails details) {
-            setState(() {
-              borderColor = details.delta.dx > 0 ? Colors.green : Colors.red;
-            });
-          },
-          onHorizontalDragEnd: (DragEndDetails details) {
-            if (vocabularyList.words.isNotEmpty && currentWordIndex < vocabularyList.words.length) {
-              if (details.velocity.pixelsPerSecond.dx > 0) {
-                answerStatusProvider.updateWordStatus(currentWordIndex, true);
-              } else if (details.velocity.pixelsPerSecond.dx < 0) {
-                answerStatusProvider.updateWordStatus(currentWordIndex, false);
-              }
-              if (currentWordIndex < vocabularyList.words.length - 1) {
-                setState(() {
-                  borderColor = Color(0xFFC6C7F7);
-                  currentWordIndex++;
-                  showWord = true;
-                });
-              }
-            }
-          },
-          child: Container(
-            width: double.infinity,
-            height: 400,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(35.0),
-              border: Border.all(color: borderColor, width: 4),
-            ),
-            child: Text(
-              textToShow ?? "단어가 없습니다",
-              style: const TextStyle(fontSize: 20),
-              textAlign: TextAlign.center,
+      body: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                children: [
+                  const Text("오답"),
+                  Container(
+                    width: 100,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: Colors.red[200],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: Text(answerStatusProvider.correctCount.toString()),
+                    ),
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+                  const Text("정답"),
+                  Container(
+                    width: 100,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: Colors.green[200],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: Text(answerStatusProvider.correctCount.toString()),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          Expanded(
+            child: Center(
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    showWord = !showWord;
+                  });
+                },
+                onHorizontalDragUpdate: (DragUpdateDetails details) {
+                  setState(() {
+                    borderColor = details.delta.dx > 0 ? Colors.green : Colors.red;
+                  });
+                },
+                onHorizontalDragEnd: (DragEndDetails details) {
+                  if (vocabularyList.words.isNotEmpty && currentWordIndex < vocabularyList.words.length) {
+                    if (details.velocity.pixelsPerSecond.dx > 0) {
+                      answerStatusProvider.updateWordStatus(currentWordIndex, true);
+                    } else if (details.velocity.pixelsPerSecond.dx < 0) {
+                      answerStatusProvider.updateWordStatus(currentWordIndex, false);
+                    }
+                    if (currentWordIndex < vocabularyList.words.length - 1) {
+                      setState(() {
+                        borderColor = const Color(0xFFC6C7F7);
+                        currentWordIndex++;
+                        showWord = true;
+                      });
+                    }
+                  }
+                },
+                child: Container(
+                  width: 280,
+                  height: 400,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(35.0),
+                    border: Border.all(color: borderColor, width: 4),
+                  ),
+                  child: Text(
+                    textToShow ?? "단어가 없습니다",
+                    style: const TextStyle(fontSize: 20),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
             ),
           ),
-        ),
-      ),
+        ],
+      )
     );
   }
 }
