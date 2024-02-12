@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 import "package:devoca/provider/model_vocabulary_provider.dart";
+import "package:devoca/provider/answer_status_provider.dart";
 import "package:flutter_svg/svg.dart";
 
 class StudyScreen extends StatefulWidget {
@@ -13,12 +14,16 @@ class StudyScreen extends StatefulWidget {
 
 class _StudyScreenState extends State<StudyScreen> {
   bool showWord = true;
+  int currentWordIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+    final answerStatusProvider = Provider.of<AnswerStatusProvider>(context);
     final vocabularyListProvider = Provider.of<VocabularyListProvider>(context);
     final vocabularyList = vocabularyListProvider.vocabularyLists[widget.vocabularyIndex];
-    final wordItem = vocabularyList.words.isNotEmpty ? vocabularyList.words.first : null;
+    final wordItem = vocabularyList.words.isNotEmpty && currentWordIndex < vocabularyList.words.length
+        ? vocabularyList.words[currentWordIndex]
+        : null;
     final textToShow = showWord ? wordItem?.word : wordItem?.meaning;
 
     return Scaffold(
@@ -47,19 +52,34 @@ class _StudyScreenState extends State<StudyScreen> {
               showWord = !showWord;
             });
           },
+          onHorizontalDragEnd: (DragEndDetails details) {
+            if (vocabularyList.words.isNotEmpty && currentWordIndex < vocabularyList.words.length) {
+              if (details.velocity.pixelsPerSecond.dx > 0) {
+                answerStatusProvider.updateWordStatus(currentWordIndex, true);
+              } else if (details.velocity.pixelsPerSecond.dx < 0) {
+                answerStatusProvider.updateWordStatus(currentWordIndex, false);
+              }
+              if (currentWordIndex < vocabularyList.words.length - 1) {
+                setState(() {
+                  currentWordIndex++;
+                  showWord = true;
+                });
+              }
+            }
+          },
           child: Container(
             width: double.infinity,
             height: 400,
             alignment: Alignment.center,
-            child: Text(
-              textToShow ?? "단어가 없습니다",
-              style: const TextStyle(fontSize: 20),
-              textAlign: TextAlign.center,
-            ),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(35.0),
               border: Border.all(color: const Color(0xFFC6C7F7)),
+            ),
+            child: Text(
+              textToShow ?? "단어가 없습니다",
+              style: const TextStyle(fontSize: 20),
+              textAlign: TextAlign.center,
             ),
           ),
         ),
