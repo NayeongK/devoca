@@ -2,6 +2,7 @@ import "package:devoca/screen/main_screen.dart";
 import "package:flutter/material.dart";
 import "package:devoca/screen/splash_screen.dart";
 import "package:devoca/provider/model_vocabulary_provider.dart";
+import "package:devoca/provider/answer_status_provider.dart";
 import "package:firebase_core/firebase_core.dart";
 import "package:provider/provider.dart";
 import "firebase_options.dart";
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => VocabularyListProvider()..getSnapshot()),
+        ChangeNotifierProvider(create: (_) => AnswerStatusProvider()),
       ],
       child: MaterialApp(
         home: FutureBuilder<Object>(
